@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es-PY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f4f6f6">
+  <meta name="description" content="Muestra interactiva de NovaTec para seguir los pedidos de Bordamart desde la aprobación de la muestra hasta la entrega.">
+  <meta property="og:title" content="Bordamart | Control de producción">
+  <meta property="og:description" content="Probá cómo pasa un lote de uniformes por aprobación, bordado y entrega.">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+  <title>Bordamart | Control de producción</title>
+</head>
+<body>
+  <a class="skip" href="#main">Ir al contenido</a>
+  <header class="app-header">
+    <a class="brand" href="#pedidos" aria-label="Bordamart, pedidos"><img src="marca.png" width="335" height="100" alt="Bordamart · Bordados generales"></a>
+    <nav aria-label="Navegación principal">
+      <a href="#pedidos" data-view="pedidos">Pedidos</a><a href="#taller" data-view="taller">Taller</a><a href="#entregas" data-view="entregas">Entregas</a>
+    </nav>
+    <span class="demo-label"><i></i> Demo · Datos ficticios</span>
+  </header>
+  <main id="main">
+    <section id="view-pedidos" aria-labelledby="main-title">
+      <div class="intro"><div><p id="today" class="eyebrow"></p><h1 id="main-title">Control de producción</h1></div><button type="button" class="button primary" data-action="new"><span aria-hidden="true">+</span> Nuevo pedido</button></div>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy"><p class="eyebrow">Taller de bordado</p><h2 id="hero-title">Del logo aprobado<br>a la prenda lista.</h2><p>Reuní la muestra, los talles y la fecha de entrega en la ficha de cada pedido.</p><button class="button mint" type="button" data-action="example">Probar un pedido <span class="arrow" aria-hidden="true"></span></button></div>
+        <figure><img src="taller.webp" width="825" height="410" alt="Máquina de bordado del taller de Bordamart"><figcaption>Taller de Bordamart</figcaption></figure>
+      </section>
+      <div class="metrics" id="metrics" aria-label="Indicadores de producción"></div>
+      <section class="surface orders" aria-labelledby="orders-title">
+        <div class="section-head"><div><h2 id="orders-title">Pedidos</h2><p id="count" aria-live="polite"></p></div><div class="filters"><input type="search" id="search" aria-label="Buscar pedido" placeholder="Buscar cliente o código"><select id="filter" aria-label="Filtrar por estado"><option value="">Todos los estados</option><option value="0">Por aprobar</option><option value="1">Aprobado</option><option value="2">En producción</option><option value="3">Listo</option><option value="4">Entregado</option></select></div></div>
+        <div class="order-list" id="orders"></div>
+      </section>
+    </section>
+    <section id="view-taller" aria-labelledby="taller-title" hidden>
+      <div class="intro"><div><h1 id="taller-title">Cola del taller</h1><p>Pedidos con muestra aprobada y lotes que ya están en máquina.</p></div></div>
+      <div class="workbench" id="workbench"></div>
+    </section>
+    <section id="view-entregas" aria-labelledby="entregas-title" hidden>
+      <div class="intro"><div><h1 id="entregas-title">Agenda de entregas</h1><p>Revisá qué hay que entregar y qué falta cerrar.</p></div></div>
+      <div class="surface"><div class="section-head"><h2>Fechas acordadas</h2><select id="delivery-filter" aria-label="Filtrar entregas"><option value="pending">Pendientes</option><option value="late">Vencidas</option><option value="done">Entregadas</option></select></div><div id="deliveries"></div></div>
+    </section>
+    <footer><span>Muestra de <strong>NovaTec Engineering</strong> para Bordamart · Cambios guardados en este navegador</span><button type="button" class="text-button" data-action="reset">Reiniciar demo</button></footer>
+  </main>
+
+  <dialog id="order-dialog" aria-labelledby="order-title">
+    <header class="dialog-head"><div><p class="eyebrow" id="order-code"></p><h2 id="order-title"></h2><p id="order-subtitle"></p></div><button class="close" type="button" aria-label="Cerrar ficha" data-action="close-order">×</button></header>
+    <div id="order-body" class="dialog-body"></div>
+  </dialog>
+
+  <dialog id="new-dialog" aria-labelledby="new-title">
+    <header class="dialog-head"><div><h2 id="new-title">Nuevo pedido</h2><p>Usá datos ficticios para probar la muestra.</p></div><button class="close" type="button" aria-label="Cerrar nuevo pedido" data-action="close-new">×</button></header>
+    <form id="new-form" class="dialog-body">
+      <div class="form-grid"><label>Cliente<input name="client" maxlength="65" required placeholder="Ej. Colegio Ceibo"></label><label>Tipo<select name="type"><option>Empresa</option><option>Colegio</option><option>Otro</option></select></label>
+      <label>Prenda<select name="garment"><option>Chombas</option><option>Remeras</option><option>Buzos</option><option>Camperas</option><option>Kepis</option><option>Delantales</option><option>Otra prenda</option></select></label>
+      <label>Fecha de entrega<input type="date" name="due" min="2020-01-01" max="2099-12-31" required></label></div>
+      <fieldset><legend>Cantidades por talle</legend><div class="size-inputs" id="size-inputs"></div><p id="form-total" class="helper"></p></fieldset>
+      <label>Ubicación del bordado<input name="placement" maxlength="90" placeholder="Ej. Pecho izquierdo"></label>
+      <label>Indicaciones para el taller<textarea name="note" rows="2" maxlength="240" placeholder="Ej. Hilo turquesa sobre prenda azul."></textarea></label>
+      <p class="inline-status" id="form-error" role="status"></p>
+      <div class="actions"><button class="button secondary" type="button" data-action="close-new">Cancelar</button><button class="button primary" type="submit">Crear pedido</button></div>
+    </form>
+  </dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><header class="dialog-head"><div><h2 id="reset-title">Reiniciar demo</h2><p>Se restaurarán los pedidos de ejemplo de este navegador.</p></div></header><div class="dialog-body actions"><button class="button secondary" type="button" data-action="cancel-reset">Cancelar</button><button class="button primary" type="button" data-action="confirm-reset">Reiniciar</button></div></dialog>
+  <div id="toast" role="status" class="toast" hidden></div>
+</body>
+</html>
